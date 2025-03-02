@@ -19,7 +19,7 @@ Most users will only be concerned with a very small subset of languages. As such
 
 The main issues arise when trying to disambiguate languages with [homographs](https://en.wikipedia.org/wiki/Homograph). These words are syntactically valid and could be pronounced in more than one language and still be correct in some situation. In this case you essentially need to add more context into the NLP model, otherwise it is too unreliable. As a result, it could be helpful to pass additional information like the previous or following sentence into the client, even if they aren't intended to be spoken, in order to give the model more context. You can also use metadata about the document like the header information in HTML, but many sites will not define this properly. Since any sentence could be composed to multiple languages, it appears not practical to use caching.
 
-In summary, it appears that it is best to have this type of feature be opt-in in a screen reader scenario since there is essentially no way to get around the fact that it is an extra CPU/memory burden to be constantly running a small NLP model before every speech-dispatcher client request.  
+In summary, it appears that it is best to have this type of feature be opt-in in a screen reader scenario since there is essentially no way to get around the fact that it is an extra CPU/memory burden to be constantly running a small NLP model before every speech-dispatcher client request. That being said, if you are disambiguating between Russian and English or another two languages with different writing systems, it won't even load the model and thus dramatically reduces memory impact to a trivial level. 
 
 ## Future Improvements
 
