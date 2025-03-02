@@ -77,7 +77,10 @@ func scanAndSpeak(input io.Reader, client *speechd.SpeechdSession, detector ling
 	for scanner.Scan() {
 		scanned_text := scanner.Text()
 
-		for _, result := range detector.DetectMultipleLanguagesOf(scanned_text) {
+		start := time.Now()
+		detectionResult := detector.DetectMultipleLanguagesOf(scanned_text)
+		log.Debugf("Detected language sections after %dms", time.Since(start).Milliseconds())
+		for _, result := range detectionResult {
 			subset := scanned_text[result.StartIndex():result.EndIndex()]
 			iso_lang := result.Language().IsoCode639_1().String()
 			log.Debugf("Detected language %s for substring '%s'", iso_lang, subset)
