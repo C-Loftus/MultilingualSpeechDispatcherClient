@@ -15,6 +15,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/pemistahl/lingua-go"
+	"golang.org/x/sys/unix"
 )
 
 // Create a mapping from string to lingua.Language
@@ -66,7 +67,6 @@ func parseFlags() (StringSlice, error) {
 }
 
 func scanAndSpeak(input io.Reader, client *speechd.SpeechdSession, detector lingua.LanguageDetector) error {
-
 	fmt.Println("Enter text to detect language (CTRL+D to exit):")
 	scanner := bufio.NewScanner(input)
 	// we need to enable event notifications to be able to wait for spoken messages to complete
@@ -98,8 +98,17 @@ func scanAndSpeak(input io.Reader, client *speechd.SpeechdSession, detector ling
 	return nil
 }
 
-func main() {
+// printMaxMemoryUsage prints the maximum amount of memory used by the process
+func printMaxMemoryUsage() {
+	var rusage unix.Rusage
+	if err := unix.Getrusage(unix.RUSAGE_SELF, &rusage); err != nil {
+		fmt.Println("Error getting memory usage:", err)
+		return
+	}
+	fmt.Printf("\nMaximum memory used: %.2f MB\n", float64(rusage.Maxrss)/1024)
+}
 
+func main() {
 	log.SetLevel(log.DebugLevel)
 
 	languages, err := parseFlags()
@@ -144,11 +153,14 @@ func main() {
 			client.Close()
 		}
 	}()
+
+	// Handle interrupt signal (CTRL+C) gracefully
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
 		client.Close()
+		printMaxMemoryUsage() // Print max memory usage before exiting
 		os.Exit(0)
 	}()
 
