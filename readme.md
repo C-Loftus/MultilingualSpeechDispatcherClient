@@ -1,4 +1,4 @@
-# Bilingual Speech-Dispatcher Client
+# Multilingual Speech-Dispatcher Client
 
 This repository is a simple proof of concept for a bilingual speech dispatcher client. It reads in data from stdin and then uses [lingua](https://github.com/pemistahl/lingua-go) to disambiguate the language based on the languages which are defined in the user's cli flags. As a result, you can turn any synthesizer into a bilingual one assuming you have voices for the proper languages installed and lingua can disambiguate them. For a list of these languages, run this program with the `--list-languages` flag. 
 
