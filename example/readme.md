@@ -1,0 +1,1 @@
+This directory contains a simple script which pipes both English and Spanish text into the program and makes speech-dispatcher speak both languages. The [output.wav](./output.wav) file contains a portion of this spoken output.
